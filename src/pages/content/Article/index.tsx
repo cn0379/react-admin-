@@ -1,0 +1,178 @@
+import React, { useEffect, useState } from 'react'
+import { PageContainer } from '@ant-design/pro-layout';
+import { Table, Card, Space, Button } from 'antd';
+import type { TableColumnType } from 'antd';
+import type { Dispatch } from 'umi';
+import { connect } from 'umi';
+import BaseFrom from '@/components/BaseFrom'
+import CreateArticle from './createArticle'
+import styles from './index.less';
+import type { FormType, ArticleType } from './model'
+
+const namespace = 'article';
+
+type SearchType = {
+  auther: string;
+  title: string;
+  info: string;
+}
+
+type ColumnType = {
+  title: string;
+  dataIndex?: string;
+}
+
+type StateType = {
+  articleList: ArticleType[];
+  dispatch: Dispatch;
+};
+
+type PropsType = {
+  articleList: ArticleType[];
+  dispatch: Dispatch
+}
+
+// 引入明细组件
+const Article: React.FC<PropsType> = (props) => {
+
+  const { articleList, dispatch } = props;
+  const [current, setCurrent] = useState(1);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const formData: FormType[] = [
+    {
+      title: '标题',
+      id: '1',
+      colLayout: 6,
+      placeholder: '请选择姓名',
+      name: 'title',
+      type: 'select',
+      selectData: [
+        {
+          name: 'jack',
+          id: '1',
+          key_id: 'id',
+          key_name: 'name',
+        },
+        {
+          name: 'bob',
+          id: '2',
+          key_id: 'id',
+          key_name: 'name',
+        }
+      ],
+    },
+    {
+      title: '作者',
+      id: '2',
+      colLayout: 6,
+      placeholder: '请输入作者信息',
+      name: 'auther',
+      type: 'input',
+    },
+    {
+      title: '详细',
+      id: '3',
+      colLayout: 6,
+      placeholder: '请输入详细信息',
+      name: 'info',
+      type: 'date',
+      vertical: 'vertical',
+      picker: 'week'
+    },
+  ]
+  const colums: TableColumnType<ColumnType>[] = [
+    {
+      title: '#',
+      // 如果定义形参未使用 建议添加_
+      render(_text, _record, index) {
+        return `${index + 1}`;
+      }
+    },
+    {
+      title: '标题',
+      dataIndex: 'title',
+    },
+    {
+      title: '链接',
+      dataIndex: 'herf',
+    },
+    {
+      title: '操作',
+      render: () => (
+        <Space>
+          <a >编辑</a>
+          <a className={styles.delBtn}>删除</a>
+        </Space>
+      )
+    }
+  ];
+
+  // 可以监听值的变化
+  useEffect(() => {
+    console.log('start');
+  }, [current]);
+
+  // 搜索条件的数据
+  const getSearchData = (data: SearchType): void => {
+    dispatch({
+      type: `${namespace}/getAtricleList`,
+      payload: {},
+    });
+  }
+
+  // 新增文章
+  const createAtricle = () => {
+    setIsModalVisible(true)
+  }
+
+  // 关闭弹窗
+  const closeCreateArticle = () => {
+    setIsModalVisible(false)
+    dispatch({
+      type: `${namespace}/insertAtricle`,
+      payload: {},
+    });
+  }
+
+
+  return (
+    <div>
+      <PageContainer className={styles.main} >
+        <Card className={styles.searchBar} >
+          <BaseFrom
+            getSearchData={getSearchData}
+            formData={formData}
+          ></BaseFrom>
+          <Button type="primary" onClick={createAtricle} style={{ marginLeft: '20px' }}>
+            新增
+         </Button>
+        </Card>
+        <Table
+          loading={false}
+          rowKey="id"
+          columns={colums}
+          dataSource={articleList}
+        />
+      </PageContainer>
+      <CreateArticle visible={isModalVisible} closeHander={closeCreateArticle} />
+    </div>
+  )
+}
+
+/**
+ * 提取需要的属性
+ * dva-loading
+ * @param param0
+ */
+const mapStateToProps = (state: StateType) => {
+  console.log("statestatestate",state);
+  
+  return {
+    articleList: state[namespace].articleList,
+    dispatch: state.dispatch,
+    // articleTotalCount: state[namespace].articleTotalCount,
+  };
+};
+
+export default connect(mapStateToProps)(Article);
