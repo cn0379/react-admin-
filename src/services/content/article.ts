@@ -25,8 +25,9 @@ export async function getAtricleData({page, limit}: AtricleSearchType) {
  * @param param0 
  */
  export async function insertAtricle(params: InsertAtricleType) {
+   console.log("params",params);
   return request(`/api/atricle/insert`, {
-    method: 'GET',
+    method: 'POST',
     data: params,
   });
 }

@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2021-04-22 11:04:20
- * @LastEditTime: 2021-05-16 18:13:27
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \react-admin-main\src\components\BaseFrom\index.tsx
- */
 import React from 'react'
 import { Form, Input, Button, Row, Col, Select, DatePicker, Space } from 'antd';
 const { Option } = Select;
@@ -45,6 +37,7 @@ const BaseFrom: React.FC<FormPropsType> = (props) => {
 
   const { formData } = props
   const [form] = Form.useForm();
+  
   // 默认宽度
   const defaultWidth: number = 300
   // 重置

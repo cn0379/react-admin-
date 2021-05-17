@@ -17,9 +17,17 @@ type SearchType = {
   info: string;
 }
 
+
+type CreateAtricleType = {
+  auther: string;
+  content: string;
+  title: string;
+}
+
 type ColumnType = {
   title: string;
-  dataIndex?: string;
+  content: string;
+  author: string;
 }
 
 type StateType = {
@@ -36,7 +44,6 @@ type PropsType = {
 const Article: React.FC<PropsType> = (props) => {
 
   const { articleList, dispatch } = props;
-  const [current, setCurrent] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const formData: FormType[] = [
@@ -94,8 +101,12 @@ const Article: React.FC<PropsType> = (props) => {
       dataIndex: 'title',
     },
     {
-      title: '链接',
-      dataIndex: 'herf',
+      title: '内容',
+      dataIndex: 'content',
+    },
+    {
+      title: '作者',
+      dataIndex: 'author',
     },
     {
       title: '操作',
@@ -111,7 +122,8 @@ const Article: React.FC<PropsType> = (props) => {
   // 可以监听值的变化
   useEffect(() => {
     console.log('start');
-  }, [current]);
+    queryAtricle()
+  }, []);
 
   // 搜索条件的数据
   const getSearchData = (data: SearchType): void => {
@@ -121,18 +133,31 @@ const Article: React.FC<PropsType> = (props) => {
     });
   }
 
+  // 查询文章
+  const queryAtricle = (): void => {
+    dispatch({
+      type: `${namespace}/getAtricleList`,
+      payload: {},
+    });
+  }
+
   // 新增文章
-  const createAtricle = () => {
+  const createAtricle = (): void => {
     setIsModalVisible(true)
   }
 
   // 关闭弹窗
   const closeCreateArticle = () => {
     setIsModalVisible(false)
+  }
+  // 确认新增
+  const confirmCreate = (data: CreateAtricleType): void => {
+    setIsModalVisible(false)
     dispatch({
       type: `${namespace}/insertAtricle`,
-      payload: {},
+      payload: data,
     });
+    queryAtricle()
   }
 
 
@@ -155,7 +180,7 @@ const Article: React.FC<PropsType> = (props) => {
           dataSource={articleList}
         />
       </PageContainer>
-      <CreateArticle visible={isModalVisible} closeHander={closeCreateArticle} />
+      <CreateArticle visible={isModalVisible} confirmCreate={confirmCreate} closeHander={closeCreateArticle} />
     </div>
   )
 }
@@ -166,8 +191,6 @@ const Article: React.FC<PropsType> = (props) => {
  * @param param0
  */
 const mapStateToProps = (state: StateType) => {
-  console.log("statestatestate",state);
-  
   return {
     articleList: state[namespace].articleList,
     dispatch: state.dispatch,

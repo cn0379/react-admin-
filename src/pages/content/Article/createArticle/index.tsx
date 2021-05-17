@@ -1,19 +1,31 @@
 import React from 'react'
 import { Modal } from 'antd';
-import { Form, Input, Col } from 'antd';
+import { Form, Input } from 'antd';
 const { TextArea } = Input;
 
 type PropsType = {
   visible: boolean,
   closeHander: () => void;
+  confirmCreate: (data: CreateAtricleType) => void;
+}
+
+
+type CreateAtricleType = {
+  auther: string;
+  content: string;
+  title: string;
 }
 
 const CreateArticle: React.FC<PropsType> = props => {
   const [form] = Form.useForm();
+  // 点击提交时的逻辑
+  const onFinish = (v: CreateAtricleType): void => {
+    props.confirmCreate(form.getFieldsValue())
+  }
   return (
     <React.Fragment >
       {/* onOk={handleOk} onCancel={handleCancel} */}
-      <Modal width={'70%'} title="Basic Modal" visible={props.visible} onCancel={props.closeHander} onOk={props.closeHander}   >
+      <Modal width={'70%'} title="Basic Modal" visible={props.visible} onCancel={props.closeHander} onOk={onFinish}   >
         <Form
           form={form}
           labelCol={{
@@ -22,7 +34,7 @@ const CreateArticle: React.FC<PropsType> = props => {
           wrapperCol={{
             span: 500
           }}
-          onFinish={props.closeHander}
+          onFinish={onFinish}
         >
           <Form.Item label={'标题'} name={'title'} >
             <Input autoComplete={'off'} placeholder={'请输入标题'} />

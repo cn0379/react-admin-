@@ -64,14 +64,14 @@ const M: MType = {
     *getAtricleList({ payload }, { call, put }) {
       // 解构返回结果,判断是否成功
       const { data } = yield call(getAtricleDataApi, payload);
-      console.log("datadatadatadata",data);
-      
       yield put({
         type: 'setArticleList',
         payload: data
       })
     },
     *insertAtricle({ payload },{call, put}) {
+      console.log(payload);
+      
       yield call(insertAtricleApi, payload);
     }
   },
