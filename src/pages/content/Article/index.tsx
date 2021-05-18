@@ -45,6 +45,8 @@ const Article: React.FC<PropsType> = (props) => {
 
   const { articleList, dispatch } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
   const formData: FormType[] = [
     {
@@ -88,6 +90,7 @@ const Article: React.FC<PropsType> = (props) => {
       picker: 'week'
     },
   ]
+
   const colums: TableColumnType<ColumnType>[] = [
     {
       title: '#',
@@ -121,16 +124,13 @@ const Article: React.FC<PropsType> = (props) => {
 
   // 可以监听值的变化
   useEffect(() => {
-    console.log('start');
+    console.log('start',page);
     queryAtricle()
-  }, []);
+  }, [page, limit]);
 
   // 搜索条件的数据
   const getSearchData = (data: SearchType): void => {
-    dispatch({
-      type: `${namespace}/getAtricleList`,
-      payload: {},
-    });
+    
   }
 
   // 查询文章
@@ -138,7 +138,8 @@ const Article: React.FC<PropsType> = (props) => {
     dispatch({
       type: `${namespace}/getAtricleList`,
       payload: {
-        limit: 2
+        limit,
+        page,
       },
     });
   }
@@ -146,6 +147,11 @@ const Article: React.FC<PropsType> = (props) => {
   // 新增文章
   const createAtricle = (): void => {
     setIsModalVisible(true)
+  }
+
+  const changePage = (page:number,limit:number):void => {
+    setPage(page)
+    setLimit(limit)
   }
 
   // 关闭弹窗
@@ -161,7 +167,6 @@ const Article: React.FC<PropsType> = (props) => {
     });
     queryAtricle()
   }
-
 
   return (
     <div>
@@ -179,8 +184,15 @@ const Article: React.FC<PropsType> = (props) => {
           loading={false}
           rowKey="id"
           columns={colums}
+          pagination={{
+            showSizeChanger: true,
+            // total: 99,
+            showTotal: detailTotal => `总共 ${detailTotal} 条记录`,
+            onChange: changePage,
+          }}
           dataSource={articleList}
         />
+
       </PageContainer>
       <CreateArticle visible={isModalVisible} confirmCreate={confirmCreate} closeHander={closeCreateArticle} />
     </div>

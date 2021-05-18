@@ -28,17 +28,7 @@ export type ArticleType = {
   id?: string;
   title: string;
   author: string;
-  collectCount: number;
-  content1?: string;
-  content2?: string;
-  coverImg?: string;
-  createTime?: string;
-  editorType?: number;
-  isShow?: number;
-  modifyTime?: string;
-  summary?: string;
-  viewCount?: number;
-  zanCount?: number;
+  content: string;
 }
 
 export type MType = {
