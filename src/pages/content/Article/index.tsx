@@ -137,7 +137,9 @@ const Article: React.FC<PropsType> = (props) => {
   const queryAtricle = (): void => {
     dispatch({
       type: `${namespace}/getAtricleList`,
-      payload: {},
+      payload: {
+        limit: 2
+      },
     });
   }
 

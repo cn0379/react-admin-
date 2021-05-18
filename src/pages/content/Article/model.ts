@@ -70,8 +70,6 @@ const M: MType = {
       })
     },
     *insertAtricle({ payload },{call, put}) {
-      console.log(payload);
-      
       yield call(insertAtricleApi, payload);
     }
   },
